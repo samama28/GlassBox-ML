@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlassBox ML — Developer Neural Engine</title>
+    <style>
+        :root {
+            --bg-dark: #070a12;
+            --panel-bg: #111827;
+            --border-color: #1f293d;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-emerald);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-emerald);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 850px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-class {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-red { background: #991b1b; }
+        .btn-blue { background: #1e40af; }
+        
+        .btn-class.active-red {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+            background: #dc2626;
+        }
+
+        .btn-class.active-blue {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+            background: #2563eb;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .control-val {
+            color: var(--accent-cyan);
+            font-family: monospace;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-cyan);
+            background: #1f2937;
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #070a12;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            background: #1f2937;
+            color: #d1d5db;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .btn-secondary:hover { background: #374151; }
+
+        .telemetry-card {
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .telemetry-row:last-child { margin-bottom: 0; }
+
+        .mode-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .tab-btn {
+            background: #1f2937;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        .canvas-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        canvas {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: #070a12;
+            cursor: crosshair;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .canvas-footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 440px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand-title">
+                <div class="brand-logo">G</div>
+                <div>
+                    <h1>GlassBox ML Studio</h1>
+                    <p class="subtitle">Interactive Neural Network & Gradient Engine</p>
+                </div>
+            </div>
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                Engine Online (NumPy Backend)
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Left Controls Sidebar -->
+            <div class="card">
+                <div class="section-title">1. Data Labeling</div>
+                <div class="btn-group">
+                    <button id="btnRed" onclick="setLabel(0)" class="btn-class btn-red active-red">
+                        🔴 Red (Class 0)
+                    </button>
+                    <button id="btnBlue" onclick="setLabel(1)" class="btn-class btn-blue">
+                        🔵 Blue (Class 1)
+                    </button>
+                </div>
+
+                <div class="section-title">2. Training Parameters</div>
+                
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>Desired Epochs</span>
+                        <span id="epochDisplay" class="control-val">200</span>
+                    </div>
+                    <input type="number" id="epochInput" value="200" min="10" max="5000" step="10" onchange="updateEpochDisplay()">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>Learning Rate (η)</span>
+                        <span id="lrDisplay" class="control-val">0.50</span>
+                    </div>
+                    <input type="range" id="lrSlider" min="0.01" max="1.0" step="0.01" value="0.5" oninput="updateLRDisplay()">
+                </div>
+
+                <button onclick="trainModel()" class="btn-primary">⚡ Execute Training</button>
+                <button onclick="resetEngine()" class="btn-secondary">🔄 Reset Weights & Canvas</button>
+
+                <div class="telemetry-card">
+                    <div class="telemetry-row">
+                        <span style="color: var(--text-muted);">Points Placed:</span>
+                        <span id="pointCount" style="color: var(--accent-cyan); font-weight: bold;">0</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span style="color: var(--text-muted);">Current Loss:</span>
+                        <span id="lossVal" style="color: var(--accent-amber); font-weight: bold;">--</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span style="color: var(--text-muted);">Accuracy:</span>
+                        <span id="accVal" style="color: var(--accent-emerald); font-weight: bold;">--</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span style="color: var(--text-muted);">Total Epochs:</span>
+                        <span id="totalEpochs" style="color: #fff; font-weight: bold;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Canvas & Diagram Modes -->
+            <div class="card">
+                <div class="section-title">
+                    <span>3. Visualization Diagram Mode</span>
+                    <span id="activeModeLabel" style="color: var(--accent-cyan);">GlassBox View</span>
+                </div>
+
+                <!-- 5 Diagram Mode Tabs -->
+                <div class="mode-tabs">
+                    <button class="tab-btn active" onclick="setMode('glassbox')">🔮 Full GlassBox</button>
+                    <button class="tab-btn" onclick="setMode('line')">⚡ Separating Line</button>
+                    <button class="tab-btn" onclick="setMode('hyperplanes')">📐 Hidden Hyperplanes</button>
+                    <button class="tab-btn" onclick="setMode('heatmap')">🌐 Probability Heatmap</button>
+                    <button class="tab-btn" onclick="setMode('lossPlot')">📈 Loss Curve Plot</button>
+                </div>
+
+                <div class="canvas-wrapper">
+                    <canvas id="mlpCanvas" width="440" height="440"></canvas>
+                    <div class="canvas-footer">
+                        <span>Click canvas to place points</span>
+                        <span>Grid Space: [0.0, 1.0]²</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const host = "127.0.0.1:8000";
+        const API_URL = "http://" + host;
+        
+        const canvas = document.getElementById('mlpCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let currentLabel = 0;
+        let points = [];
+        let viewMode = 'glassbox'; 
+        let lossHistory = [];
+        let totalEpochsRun = 0;
+
+        function setLabel(label) {
+            currentLabel = label;
+            document.getElementById('btnRed').className = label === 0 ? "btn-class btn-red active-red" : "btn-class btn-red";
+            document.getElementById('btnBlue').className = label === 1 ? "btn-class btn-blue active-blue" : "btn-class btn-blue";
+        }
+
+        function updateEpochDisplay() {
+            const val = document.getElementById('epochInput').value;
+            document.getElementById('epochDisplay').innerText = val;
+        }
+
+        function updateLRDisplay() {
+            const val = parseFloat(document.getElementById('lrSlider').value).toFixed(2);
+            document.getElementById('lrDisplay').innerText = val;
+        }
+
+        function setMode(mode) {
+            viewMode = mode;
+            const modeNames = {
+                'glassbox': 'Full GlassBox View',
+                'line': 'Separating Line View',
+                'hyperplanes': 'Hidden Hyperplanes View',
+                'heatmap': 'Probability Heatmap View',
+                'lossPlot': 'Loss & Accuracy Plot'
+            };
+            document.getElementById('activeModeLabel').innerText = modeNames[mode];
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            drawCanvas();
+        }
+
+        canvas.addEventListener('click', (e) => {
+            if (viewMode === 'lossPlot') return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            const x1 = clickX / canvas.width;
+            const x2 = 1.0 - (clickY / canvas.height);
+            
+            points.push({ x1: x1, x2: x2, label: currentLabel });
+            document.getElementById('pointCount').innerText = points.length;
+            drawCanvas();
+        });
+
+        async function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // MODE 5: LOSS & ACCURACY CURVE PLOT
+            if (viewMode === 'lossPlot') {
+                drawLossCurvePlot();
+                return;
+            }
+
+            // MODE 4 or 1: HEATMAP BACKGROUND
+            if (viewMode === 'heatmap' || viewMode === 'glassbox') {
+                try {
+                    const res = await fetch(API_URL + "/decision-boundary?resolution=35");
+                    if (res.ok) {
+                        const data = await res.json();
+                        const grid = data.grid;
+                        const resSize = grid.length;
+                        const cellW = canvas.width / resSize;
+                        const cellH = canvas.height / resSize;
+
+                        for (let r = 0; r < resSize; r++) {
+                            for (let c = 0; c < resSize; c++) {
+                                const prob = grid[r][c];
+                                const red = Math.floor((1 - prob) * 220);
+                                const blue = Math.floor(prob * 220);
+                                const alpha = viewMode === 'glassbox' ? 0.25 : 0.6;
+                                ctx.fillStyle = "rgba(" + red + ", 40, " + blue + ", " + alpha + ")";
+                                ctx.fillRect(c * cellW, (resSize - 1 - r) * cellH, cellW + 1, cellH + 1);
+                            }
+                        }
+                    }
+                } catch (err) {}
+            }
+
+            // MODE 2, 1: SEPARATING LINE (CONTOUR P = 0.5)
+            if (viewMode === 'line' || viewMode === 'glassbox') {
+                try {
+                    const res = await fetch(API_URL + "/decision-boundary?resolution=50");
+                    if (res.ok) {
+                        const data = await res.json();
+                        const grid = data.grid;
+                        const resSize = grid.length;
+                        const cellW = canvas.width / resSize;
+                        const cellH = canvas.height / resSize;
+
+                        for (let r = 0; r < resSize - 1; r++) {
+                            for (let c = 0; c < resSize - 1; c++) {
+                                const pCurr = grid[r][c];
+                                const pRight = grid[r][c + 1];
+                                const pUp = grid[r + 1][c];
+
+                                if ((pCurr - 0.5) * (pRight - 0.5) < 0 || (pCurr - 0.5) * (pUp - 0.5) < 0) {
+                                    const x = (c + 0.5) * cellW;
+                                    const y = (resSize - 1 - r - 0.5) * cellH;
+                                    
+                                    ctx.beginPath();
+                                    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                                    ctx.fillStyle = "#06b6d4";
+                                    ctx.fill();
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {}
+            }
+
+            // MODE 3, 1: HIDDEN HYPERPLANES (DASHED WHITE LINES)
+            if (viewMode === 'hyperplanes' || viewMode === 'glassbox') {
+                try {
+                    const resLines = await fetch(API_URL + "/hyperplanes");
+                    if (resLines.ok) {
+                        const lineData = await resLines.json();
+                        ctx.setLineDash([4, 4]);
+                        
+                        lineData.lines.forEach(l => {
+                            if (Math.abs(l.w2) > 1e-5) {
+                                const y_at_x0 = (-l.b) / l.w2;
+                                const y_at_x1 = (-l.w1 - l.b) / l.w2;
+
+                                const canvasY0 = (1.0 - y_at_x0) * canvas.height;
+                                const canvasY1 = (1.0 - y_at_x1) * canvas.height;
+
+                                ctx.beginPath();
+                                ctx.moveTo(0, canvasY0);
+                                ctx.lineTo(canvas.width, canvasY1);
+                                ctx.lineWidth = 1.5;
+                                ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                                ctx.stroke();
+                            }
+                        });
+                        ctx.setLineDash([]);
+                    }
+                } catch (err) {}
+            }
+
+            // DRAW SCATTER POINTS
+            points.forEach(p => {
+                const cx = p.x1 * canvas.width;
+                const cy = (1.0 - p.x2) * canvas.height;
+                
+                ctx.beginPath();
+                ctx.arc(cx, cy, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = p.label === 0 ? '#ef4444' : '#3b82f6';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+            });
+        }
+
+        function drawLossCurvePlot() {
+            ctx.fillStyle = "#0b0f19";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (lossHistory.length === 0) {
+                ctx.fillStyle = "#9ca3af";
+                ctx.font = "14px monospace";
+                ctx.textAlign = "center";
+                ctx.fillText("No training history yet. Click 'Execute Training'!", canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
+            const padding = 40;
+            const plotW = canvas.width - padding * 2;
+            const plotH = canvas.height - padding * 2;
+
+            ctx.beginPath();
+            ctx.strokeStyle = "#1f293d";
+            ctx.lineWidth = 1;
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Loss Curve (Amber)
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#f59e0b";
+
+            const maxLoss = Math.max(...lossHistory.map(h => h.loss), 1.0);
+
+            lossHistory.forEach((h, idx) => {
+                const x = padding + (idx / (lossHistory.length - 1 || 1)) * plotW;
+                const y = (canvas.height - padding) - (h.loss / maxLoss) * plotH;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Accuracy Curve (Emerald)
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#10b981";
+
+            lossHistory.forEach((h, idx) => {
+                const x = padding + (idx / (lossHistory.length - 1 || 1)) * plotW;
+                const y = (canvas.height - padding) - h.accuracy * plotH;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            ctx.font = "12px monospace";
+            ctx.fillStyle = "#f59e0b";
+            ctx.fillText("── Loss", padding + 10, padding - 10);
+            ctx.fillStyle = "#10b981";
+            ctx.fillText("── Accuracy", padding + 100, padding - 10);
+        }
+
+        async function trainModel() {
+            if (points.length === 0) {
+                alert("Click on the canvas to place some points first!");
+                return;
+            }
+
+            const epochs = parseInt(document.getElementById('epochInput').value) || 200;
+            const lr = parseFloat(document.getElementById('lrSlider').value) || 0.5;
+
+            try {
+                const res = await fetch(API_URL + "/train", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ points: points, epochs: epochs, learning_rate: lr })
+                });
+
+                const data = await res.json();
+                document.getElementById('lossVal').innerText = data.final_loss.toFixed(4);
+                document.getElementById('accVal').innerText = (data.final_accuracy * 100).toFixed(1) + "%";
+                
+                totalEpochsRun += epochs;
+                document.getElementById('totalEpochs').innerText = totalEpochsRun;
+
+                if (data.history) {
+                    lossHistory = lossHistory.concat(data.history);
+                }
+
+                drawCanvas();
+            } catch (err) {
+                alert("Could not reach FastAPI backend. Make sure uvicorn main:app --reload is running!");
+            }
+        }
+
+        async function resetEngine() {
+            points = [];
+            lossHistory = [];
+            totalEpochsRun = 0;
+            document.getElementById('pointCount').innerText = "0";
+            document.getElementById('lossVal').innerText = "--";
+            document.getElementById('accVal').innerText = "--";
+            document.getElementById('totalEpochs').innerText = "0";
+            
+            try {
+                await fetch(API_URL + "/reset", { method: 'POST' });
+            } catch (err) {}
+            
+            drawCanvas();
+        }
+
+        drawCanvas();
+    </script>
+</body>
+</html>
